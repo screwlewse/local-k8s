@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/screwlewse/local-k8s.git
+    targetRevision: HEAD
+    path: argocd/applications
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-apps
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: dev
+        url: https://kubernetes.default.svc
+        values:
+          environment: dev
+          ingressDomain: dev.local
+      - cluster: staging
+        url: https://kubernetes.default.svc
+        values:
+          environment: staging
+          ingressDomain: staging.local
+      - cluster: prod
+        url: https://kubernetes.default.svc
+        values:
+          environment: prod
+          ingressDomain: prod.local
+  template:
+    metadata:
+      name: '{{cluster}}-apps'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/screwlewse/local-k8s.git
+        targetRevision: HEAD
+        path: argocd/overlays/{{cluster}}
+      destination:
+        server: '{{url}}'
+        namespace: '{{cluster}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true 
