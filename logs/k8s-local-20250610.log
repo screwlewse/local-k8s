@@ -1,0 +1,32 @@
+2025-06-10 22:01:17 [INFO] Starting cluster creation process...
+2025-06-10 22:01:17 [INFO] Running system checks...
+2025-06-10 22:01:18 [WARN] Docker memory (3 GB) is less than recommended (16 GB)
+2025-06-10 22:01:18 [INFO] All required ports are available
+2025-06-10 22:01:18 [INFO] Disk space OK:  GB available
+2025-06-10 22:01:18 [ERROR] System checks failed
+2025-06-10 22:01:18 [FATAL] System checks failed. Please fix the issues and try again.
+2025-06-10 22:14:18 [INFO] Starting cluster creation process...
+2025-06-10 22:14:18 [INFO] Running system checks...
+2025-06-10 22:14:19 [WARN] Docker memory (3.82 GB) is less than recommended (4 GB)
+2025-06-10 22:14:19 [INFO] Docker resources: 8 CPUs, 3.82 GB memory
+2025-06-10 22:14:19 [INFO] All required ports are available
+2025-06-10 22:14:19 [INFO] Disk space OK:  GB available
+2025-06-10 22:14:19 [INFO] All system checks passed
+2025-06-10 22:14:19 [INFO] Creating cluster: dev with 1 worker nodes
+2025-06-10 22:14:46 [INFO] Validating cluster: dev
+2025-06-10 22:14:48 [INFO] Cluster dev is ready
+2025-06-10 22:14:48 [INFO] Cluster dev created successfully!
+2025-06-10 22:14:48 [INFO] HTTP port: 8080
+2025-06-10 22:14:49 [INFO] HTTPS port: 8443
+2025-06-10 22:14:49 [INFO] ArgoCD port: 8081
+2025-06-10 22:14:49 [INFO] -----------------------------------
+2025-06-10 22:14:49 [INFO] Creating cluster: staging with 1 worker nodes
+2025-06-10 22:15:07 [INFO] Validating cluster: staging
+2025-06-10 22:15:07 [INFO] Cluster staging is ready
+2025-06-10 22:15:08 [INFO] Cluster staging created successfully!
+2025-06-10 22:15:08 [INFO] HTTP port: 9080
+2025-06-10 22:15:08 [INFO] HTTPS port: 9443
+2025-06-10 22:15:08 [INFO] ArgoCD port: 9081
+2025-06-10 22:15:08 [INFO] -----------------------------------
+2025-06-10 22:15:08 [INFO] Creating cluster: prod with 2 worker nodes
+2025-06-10 22:15:31 [INFO] Validating cluster: prod

@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: nginx
+  annotations:
+    ingressclass.kubernetes.io/is-default-class: "true"
+spec:
+  controller: k8s.io/ingress-nginx
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+data:
+  use-forwarded-headers: "true"
+  proxy-buffer-size: "64k"
+  proxy-body-size: "200m"
+  client-header-buffer-size: "64k"
+  # Production-specific settings
+  keep-alive-requests: "1000"
+  max-worker-connections: "4096"
+  http2-max-field-size: "64k"
+  ssl-protocols: "TLSv1.2 TLSv1.3"
+  ssl-ciphers: "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384"
+  enable-ocsp: "true"
+  hsts: "true"
+  hsts-max-age: "31536000" 
