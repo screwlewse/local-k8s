@@ -5,14 +5,6 @@ LOG_LEVEL=${LOG_LEVEL:-"INFO"}
 LOG_DIR=${LOG_DIR:-"logs"}
 LOG_FILE="${LOG_DIR}/k8s-local-$(date +%Y%m%d).log"
 
-# ANSI color codes
-readonly RED='\033[0;31m'
-readonly YELLOW='\033[1;33m'
-readonly GREEN='\033[0;32m'
-readonly BLUE='\033[0;34m'
-readonly NC='\033[0m' # No Color
-readonly BOLD='\033[1m'
-
 # Initialize logging
 init_logging() {
     mkdir -p "${LOG_DIR}"
@@ -51,18 +43,8 @@ _log() {
         # Format the message
         local formatted_message="${timestamp} [${level}] ${message}"
         
-        # Add color to console output
-        case $level in
-            "DEBUG") local colored_message="${BLUE}${formatted_message}${NC}" ;;
-            "INFO")  local colored_message="${GREEN}${formatted_message}${NC}" ;;
-            "WARN")  local colored_message="${YELLOW}${formatted_message}${NC}" ;;
-            "ERROR") local colored_message="${RED}${formatted_message}${NC}" ;;
-            "FATAL") local colored_message="${RED}${BOLD}${formatted_message}${NC}" ;;
-            *)       local colored_message="${formatted_message}" ;;
-        esac
-        
         # Output to console and log file
-        echo -e "${colored_message}"
+        echo "${formatted_message}"
         echo "${formatted_message}" >> "${LOG_FILE}"
     fi
 }

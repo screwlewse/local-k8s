@@ -133,8 +133,6 @@ create_cluster() {
         --k3s-arg \"--kubelet-arg=eviction-minimum-reclaim=imagefs.available=1%,nodefs.available=1%@agent:0\" \
         --k3s-arg \"--kubelet-arg=eviction-hard=imagefs.available<1%,nodefs.available<1%@server:0\" \
         --k3s-arg \"--kubelet-arg=eviction-minimum-reclaim=imagefs.available=1%,nodefs.available=1%@server:0\" \
-        --kubeconfig-update-default=false \
-        --kubeconfig=\"$kubeconfig_file\" \
         --wait"; then
         log_error "Failed to create cluster $cluster_name"
         return 1
@@ -143,6 +141,12 @@ create_cluster() {
     # Validate cluster creation
     if ! validate_cluster "$cluster_name"; then
         log_error "Cluster validation failed for $cluster_name"
+        return 1
+    fi
+    
+    # Get the kubeconfig and save it
+    if ! log_cmd "k3d kubeconfig get \"$cluster_name\" > \"$kubeconfig_file\""; then
+        log_error "Failed to get kubeconfig for cluster $cluster_name"
         return 1
     fi
     
@@ -185,28 +189,33 @@ main() {
     # Create directory for kubeconfig files if it doesn't exist
     mkdir -p "$HOME/.k3d"
     
-    # Save original KUBECONFIG
-    local original_kubeconfig="${KUBECONFIG:-}"
-    
     # Create each cluster
     local cluster
     for cluster in "${CLUSTERS[@]}"; do
         if ! create_cluster "$cluster"; then
             log_error "Failed to create cluster $cluster"
             cleanup_on_error
-            # Restore original KUBECONFIG
-            export KUBECONFIG="$original_kubeconfig"
             exit 1
         fi
     done
     
     # Create final merged kubeconfig
-    if [ -n "$original_kubeconfig" ]; then
-        log_info "Creating final merged kubeconfig..."
-        local final_kubeconfig="$HOME/.k3d/kubeconfig-all.yaml"
-        KUBECONFIG="$original_kubeconfig:$KUBECONFIG" kubectl config view --flatten > "$final_kubeconfig"
-        export KUBECONFIG="$final_kubeconfig"
-    fi
+    log_info "Creating final merged kubeconfig..."
+    local final_kubeconfig="$HOME/.k3d/kubeconfig-all.yaml"
+    local kubeconfig_list=""
+    
+    # Build list of kubeconfig files
+    for cluster in "${CLUSTERS[@]}"; do
+        if [ -z "$kubeconfig_list" ]; then
+            kubeconfig_list="$HOME/.k3d/kubeconfig-$cluster.yaml"
+        else
+            kubeconfig_list="$kubeconfig_list:$HOME/.k3d/kubeconfig-$cluster.yaml"
+        fi
+    done
+    
+    # Merge all kubeconfig files
+    KUBECONFIG="$kubeconfig_list" kubectl config view --flatten > "$final_kubeconfig"
+    export KUBECONFIG="$final_kubeconfig"
     
     # Show available contexts
     log_info "Available Kubernetes contexts:"
@@ -215,6 +224,11 @@ main() {
     log_info "All clusters have been created successfully!"
     log_info "Use 'kubectl config use-context <cluster-name>' to switch between clusters"
     log_info "Your merged kubeconfig is at: $KUBECONFIG"
+    
+    # Set the first cluster as the current context
+    if [ "${#CLUSTERS[@]}" -gt 0 ]; then
+        kubectl config use-context "${CLUSTERS[0]}"
+    fi
 }
 
 # Run main function

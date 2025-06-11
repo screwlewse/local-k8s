@@ -30,3 +30,165 @@
 2025-06-10 22:15:08 [INFO] -----------------------------------
 2025-06-10 22:15:08 [INFO] Creating cluster: prod with 2 worker nodes
 2025-06-10 22:15:31 [INFO] Validating cluster: prod
+2025-06-10 22:20:39 [ERROR] Timeout waiting for cluster prod to be ready
+2025-06-10 22:20:39 [ERROR] Cluster validation failed for prod
+2025-06-10 22:20:39 [ERROR] Failed to create cluster prod
+2025-06-10 22:20:39 [WARN] Performing cleanup after error...
+2025-06-10 22:20:39 [INFO] Cleaning up cluster: dev
+2025-06-10 22:20:44 [INFO] Cleaning up cluster: staging
+2025-06-10 22:20:46 [INFO] Cleaning up cluster: prod
+2025-06-10 22:23:51 [INFO] Starting cluster creation process...
+2025-06-10 22:23:51 [INFO] Running system checks...
+2025-06-10 22:23:52 [WARN] Docker memory (3.82 GB) is less than recommended (4 GB)
+2025-06-10 22:23:52 [INFO] Docker resources: 8 CPUs, 3.82 GB memory
+2025-06-10 22:23:52 [INFO] All required ports are available
+2025-06-10 22:23:52 [INFO] Disk space OK: 75.80 GB available
+2025-06-10 22:23:52 [INFO] All system checks passed
+2025-06-10 22:23:52 [INFO] Creating cluster: dev with 1 worker nodes
+2025-06-10 22:23:52 [ERROR] Command failed with exit code 1: k3d cluster create "dev"         --servers 1         --agents "1"         --port "8080:80@loadbalancer"         --port "8443:443@loadbalancer"         --port "8081:8080@loadbalancer"         --k3s-arg "--disable=traefik@server:0"         --k3s-arg "--kubelet-arg=eviction-hard=imagefs.available<1%,nodefs.available<1%@agent:0"         --k3s-arg "--kubelet-arg=eviction-minimum-reclaim=imagefs.available=1%,nodefs.available=1%@agent:0"         --k3s-arg "--kubelet-arg=eviction-hard=imagefs.available<1%,nodefs.available<1%@server:0"         --k3s-arg "--kubelet-arg=eviction-minimum-reclaim=imagefs.available=1%,nodefs.available=1%@server:0"         --kubeconfig-update-default=false         --kubeconfig="/Users/davidg/.k3d/kubeconfig-dev.yaml"         --wait
+2025-06-10 22:23:52 [ERROR] Output: Error: unknown flag: --kubeconfig
+Usage:
+  k3d cluster create NAME [flags]
+
+Flags:
+  -a, --agents int                                                     Specify how many agents you want to create
+      --agents-memory string                                           Memory limit imposed on the agents nodes [From docker]
+      --api-port [HOST:]HOSTPORT                                       Specify the Kubernetes API server port exposed on the LoadBalancer (Format: [HOST:]HOSTPORT)
+                                                                        - Example: `k3d cluster create --servers 3 --api-port 0.0.0.0:6550`
+  -c, --config string                                                  Path of a config file to use
+  -e, --env KEY[=VALUE][@NODEFILTER[;NODEFILTER...]]                   Add environment variables to nodes (Format: KEY[=VALUE][@NODEFILTER[;NODEFILTER...]]
+                                                                        - Example: `k3d cluster create --agents 2 -e "HTTP_PROXY=my.proxy.com@server:0" -e "SOME_KEY=SOME_VAL@server:0"`
+      --gpus string                                                    GPU devices to add to the cluster node containers ('all' to pass all GPUs) [From docker]
+  -h, --help                                                           help for create
+      --host-alias ip:host[,host,...]                                  Add ip:host[,host,...] mappings
+      --host-pid-mode                                                  Enable host pid mode of server(s) and agent(s)
+  -i, --image string                                                   Specify k3s image that you want to use for the nodes
+      --k3s-arg ARG@NODEFILTER[;@NODEFILTER]                           Additional args passed to k3s command (Format: ARG@NODEFILTER[;@NODEFILTER])
+                                                                        - Example: `k3d cluster create --k3s-arg "--disable=traefik@server:0"`
+      --k3s-node-label KEY[=VALUE][@NODEFILTER[;NODEFILTER...]]        Add label to k3s node (Format: KEY[=VALUE][@NODEFILTER[;NODEFILTER...]]
+                                                                        - Example: `k3d cluster create --agents 2 --k3s-node-label "my.label@agent:0,1" --k3s-node-label "other.label=somevalue@server:0"`
+      --kubeconfig-switch-context                                      Directly switch the default kubeconfig's current-context to the new cluster's context (requires --kubeconfig-update-default) (default true)
+      --kubeconfig-update-default                                      Directly update the default kubeconfig with the new cluster's context (default true)
+      --lb-config-override strings                                     Use dotted YAML path syntax to override nginx loadbalancer settings
+      --network string                                                 Join an existing network
+      --no-image-volume                                                Disable the creation of a volume for importing images
+      --no-lb                                                          Disable the creation of a LoadBalancer in front of the server nodes
+      --no-rollback                                                    Disable the automatic rollback actions, if anything goes wrong
+  -p, --port [HOST:][HOSTPORT:]CONTAINERPORT[/PROTOCOL][@NODEFILTER]   Map ports from the node containers (via the serverlb) to the host (Format: [HOST:][HOSTPORT:]CONTAINERPORT[/PROTOCOL][@NODEFILTER])
+                                                                        - Example: `k3d cluster create --agents 2 -p 8080:80@agent:0 -p 8081@agent:1`
+      --registry-config string                                         Specify path to an extra registries.yaml file
+      --registry-create NAME[:HOST][:HOSTPORT]                         Create a k3d-managed registry and connect it to the cluster (Format: NAME[:HOST][:HOSTPORT]
+                                                                        - Example: `k3d cluster create --registry-create mycluster-registry:0.0.0.0:5432`
+      --registry-use stringArray                                       Connect to one or more k3d-managed registries running locally
+      --runtime-label KEY[=VALUE][@NODEFILTER[;NODEFILTER...]]         Add label to container runtime (Format: KEY[=VALUE][@NODEFILTER[;NODEFILTER...]]
+                                                                        - Example: `k3d cluster create --agents 2 --runtime-label "my.label@agent:0,1" --runtime-label "other.label=somevalue@server:0"`
+      --runtime-ulimit NAME[=SOFT]:[HARD]                              Add ulimit to container runtime (Format: NAME[=SOFT]:[HARD]
+                                                                        - Example: `k3d cluster create --agents 2 --runtime-ulimit "nofile=1024:1024" --runtime-ulimit "noproc=1024:1024"`
+  -s, --servers int                                                    Specify how many servers you want to create
+      --servers-memory string                                          Memory limit imposed on the server nodes [From docker]
+      --subnet 172.28.0.0/16                                           [Experimental: IPAM] Define a subnet for the newly created container network (Example: 172.28.0.0/16)
+      --timeout duration                                               Rollback changes if cluster couldn't be created in specified duration.
+      --token string                                                   Specify a cluster token. By default, we generate one.
+  -v, --volume [SOURCE:]DEST[@NODEFILTER[;NODEFILTER...]]              Mount volumes into the nodes (Format: [SOURCE:]DEST[@NODEFILTER[;NODEFILTER...]]
+                                                                        - Example: `k3d cluster create --agents 2 -v /my/path@agent:0,1 -v /tmp/test:/tmp/other@server:0`
+      --wait                                                           Wait for the server(s) to be ready before returning. Use '--timeout DURATION' to not wait forever. (default true)
+
+Global Flags:
+      --timestamps   Enable Log timestamps
+      --trace        Enable super verbose output (trace logging)
+      --verbose      Enable verbose output (debug logging)
+
+time="2025-06-10T22:23:52-07:00" level=fatal msg="unknown flag: --kubeconfig"
+2025-06-10 22:23:52 [ERROR] Failed to create cluster dev
+2025-06-10 22:23:52 [ERROR] Failed to create cluster dev
+2025-06-10 22:23:52 [WARN] Performing cleanup after error...
+2025-06-10 22:24:33 [INFO] Starting cluster creation process...
+2025-06-10 22:24:33 [INFO] Running system checks...
+2025-06-10 22:24:34 [WARN] Docker memory (3.82 GB) is less than recommended (4 GB)
+2025-06-10 22:24:34 [INFO] Docker resources: 8 CPUs, 3.82 GB memory
+2025-06-10 22:24:34 [INFO] All required ports are available
+2025-06-10 22:24:34 [INFO] Disk space OK: 75.80 GB available
+2025-06-10 22:24:34 [INFO] All system checks passed
+2025-06-10 22:24:34 [INFO] Creating cluster: dev with 1 worker nodes
+2025-06-10 22:24:54 [INFO] Validating cluster: dev
+2025-06-10 22:24:55 [INFO] Cluster dev is ready
+2025-06-10 22:24:55 [INFO] Cluster dev created successfully!
+2025-06-10 22:24:55 [INFO] HTTP port: 8080
+2025-06-10 22:24:55 [INFO] HTTPS port: 8443
+2025-06-10 22:24:55 [INFO] ArgoCD port: 8081
+2025-06-10 22:24:55 [INFO] -----------------------------------
+2025-06-10 22:24:55 [INFO] Creating cluster: staging with 1 worker nodes
+2025-06-10 22:25:17 [INFO] Validating cluster: staging
+2025-06-10 22:25:18 [INFO] Cluster staging is ready
+2025-06-10 22:25:18 [INFO] Merging kubeconfig files...
+2025-06-10 22:25:19 [INFO] Cluster staging created successfully!
+2025-06-10 22:25:19 [INFO] HTTP port: 9080
+2025-06-10 22:25:19 [INFO] HTTPS port: 9443
+2025-06-10 22:25:19 [INFO] ArgoCD port: 9081
+2025-06-10 22:25:19 [INFO] -----------------------------------
+2025-06-10 22:25:19 [INFO] Creating cluster: prod with 2 worker nodes
+2025-06-10 22:25:42 [INFO] Validating cluster: prod
+2025-06-10 22:25:43 [INFO] Cluster prod is ready
+2025-06-10 22:25:44 [INFO] Merging kubeconfig files...
+2025-06-10 22:25:44 [INFO] Cluster prod created successfully!
+2025-06-10 22:25:44 [INFO] HTTP port: 10080
+2025-06-10 22:25:44 [INFO] HTTPS port: 10443
+2025-06-10 22:25:44 [INFO] ArgoCD port: 10081
+2025-06-10 22:25:44 [INFO] -----------------------------------
+2025-06-10 22:25:44 [INFO] Available Kubernetes contexts:
+2025-06-10 22:25:44 [INFO] All clusters have been created successfully!
+2025-06-10 22:25:44 [INFO] Use 'kubectl config use-context <cluster-name>' to switch between clusters
+2025-06-10 22:25:44 [INFO] Your merged kubeconfig is at: /var/folders/t_/gcdn3w0j0331m5kshbtj8f_80000gn/T/tmp.l8bQDSvcjK
+2025-06-10 22:26:34 [INFO] Starting cluster cleanup process...
+2025-06-10 22:26:34 [INFO] Deleting cluster: dev
+2025-06-10 22:26:37 [INFO] Cluster dev deleted successfully
+2025-06-10 22:26:37 [INFO] -----------------------------------
+2025-06-10 22:26:37 [INFO] Deleting cluster: staging
+2025-06-10 22:26:39 [INFO] Cluster staging deleted successfully
+2025-06-10 22:26:39 [INFO] -----------------------------------
+2025-06-10 22:26:39 [INFO] Deleting cluster: prod
+2025-06-10 22:26:41 [INFO] Cluster prod deleted successfully
+2025-06-10 22:26:41 [INFO] -----------------------------------
+2025-06-10 22:26:41 [INFO] Cleaning up Docker resources...
+2025-06-10 22:26:41 [INFO] Docker cleanup completed
+2025-06-10 22:26:41 [INFO] Cleaning up old log files...
+2025-06-10 22:26:41 [INFO] All clusters have been cleaned up successfully!
+2025-06-10 22:26:42 [INFO] Starting cluster creation process...
+2025-06-10 22:26:42 [INFO] Running system checks...
+2025-06-10 22:26:42 [WARN] Docker memory (3.82 GB) is less than recommended (4 GB)
+2025-06-10 22:26:43 [INFO] Docker resources: 8 CPUs, 3.82 GB memory
+2025-06-10 22:26:43 [INFO] All required ports are available
+2025-06-10 22:26:43 [INFO] Disk space OK: 74.57 GB available
+2025-06-10 22:26:43 [INFO] All system checks passed
+2025-06-10 22:26:43 [INFO] Creating cluster: dev with 1 worker nodes
+2025-06-10 22:27:01 [INFO] Validating cluster: dev
+2025-06-10 22:27:02 [INFO] Cluster dev is ready
+2025-06-10 22:27:02 [INFO] Merging kubeconfig files...
+2025-06-10 22:27:02 [INFO] Cluster dev created successfully!
+2025-06-10 22:27:02 [INFO] HTTP port: 8080
+2025-06-10 22:27:02 [INFO] HTTPS port: 8443
+2025-06-10 22:27:02 [INFO] ArgoCD port: 8081
+2025-06-10 22:27:02 [INFO] -----------------------------------
+2025-06-10 22:27:02 [INFO] Creating cluster: staging with 1 worker nodes
+2025-06-10 22:27:20 [INFO] Validating cluster: staging
+2025-06-10 22:27:21 [INFO] Cluster staging is ready
+2025-06-10 22:27:21 [INFO] Merging kubeconfig files...
+2025-06-10 22:27:21 [INFO] Cluster staging created successfully!
+2025-06-10 22:27:21 [INFO] HTTP port: 9080
+2025-06-10 22:27:21 [INFO] HTTPS port: 9443
+2025-06-10 22:27:21 [INFO] ArgoCD port: 9081
+2025-06-10 22:27:21 [INFO] -----------------------------------
+2025-06-10 22:27:21 [INFO] Creating cluster: prod with 2 worker nodes
+2025-06-10 22:27:44 [INFO] Validating cluster: prod
+2025-06-10 22:27:45 [INFO] Cluster prod is ready
+2025-06-10 22:27:45 [INFO] Merging kubeconfig files...
+2025-06-10 22:27:45 [INFO] Cluster prod created successfully!
+2025-06-10 22:27:45 [INFO] HTTP port: 10080
+2025-06-10 22:27:45 [INFO] HTTPS port: 10443
+2025-06-10 22:27:45 [INFO] ArgoCD port: 10081
+2025-06-10 22:27:45 [INFO] -----------------------------------
+2025-06-10 22:27:45 [INFO] Creating final merged kubeconfig...
+2025-06-10 22:27:46 [INFO] Available Kubernetes contexts:
+2025-06-10 22:27:46 [INFO] All clusters have been created successfully!
+2025-06-10 22:27:46 [INFO] Use 'kubectl config use-context <cluster-name>' to switch between clusters
+2025-06-10 22:27:46 [INFO] Your merged kubeconfig is at: /Users/davidg/.k3d/kubeconfig-all.yaml
