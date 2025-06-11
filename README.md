@@ -2,13 +2,22 @@
 
 This repository contains scripts and configurations for managing local Kubernetes clusters using k3d. The setup includes three environments: development, staging, and production, each with its own resource limits and network configurations.
 
-## Prerequisites
+## System Requirements
 
+### Platform Compatibility
+- **macOS Only**: This setup is specifically designed and tested for macOS (both Intel and ARM-based)
+- **Bash Version**: Uses macOS default bash v3.2 for maximum compatibility
+- **Docker Desktop for Mac**: Required for container runtime
+
+### Hardware Requirements
+- At least 4GB RAM (16GB recommended)
+- Available ports: 8080-8081, 8443, 9080-9081, 9443, 10080-10081, 10443
+
+### Required Software
 - Docker Desktop for Mac
 - kubectl
 - k3d
-- At least 16GB RAM recommended
-- Available ports: 8080-8081, 8443, 9080-9081, 9443, 10080-10081, 10443
+- bash (default macOS version 3.2 or later)
 
 ## Quick Start
 
@@ -100,7 +109,29 @@ k3d cluster delete <cluster-name>  # dev, staging, or prod
 
 ### Common Issues
 
-1. **Ports Already in Use**
+1. **"Connection refused" or Wrong Port Errors**
+   
+   If you see errors like "connection to the server was refused" or wrong port issues, your kubeconfig might be out of sync. Fix it using either method:
+
+   ```bash
+   # Option 1: Regenerate single cluster config
+   k3d kubeconfig get dev > $HOME/.k3d/kubeconfig-dev.yaml
+   export KUBECONFIG=$HOME/.k3d/kubeconfig-dev.yaml
+
+   # Option 2: Regenerate all configs
+   for cluster in dev staging prod; do 
+     k3d kubeconfig get $cluster > $HOME/.k3d/kubeconfig-$cluster.yaml
+   done
+   KUBECONFIG=$(for f in $HOME/.k3d/kubeconfig-*.yaml; do echo -n ":$f"; done | cut -c2-) kubectl config view --flatten > $HOME/.k3d/kubeconfig-all.yaml
+   export KUBECONFIG=$HOME/.k3d/kubeconfig-all.yaml
+   ```
+
+   This typically happens when:
+   - Clusters are restarted
+   - Docker Desktop is restarted
+   - System is rebooted
+
+2. **Ports Already in Use**
    ```bash
    # Check what's using the port
    lsof -i :<port-number>
@@ -109,7 +140,7 @@ k3d cluster delete <cluster-name>  # dev, staging, or prod
    kill -9 <PID>
    ```
 
-2. **Insufficient Resources**
+3. **Insufficient Resources**
    
    Symptoms:
    - Pods stuck in "Pending" state
@@ -127,7 +158,7 @@ k3d cluster delete <cluster-name>  # dev, staging, or prod
    # Open Docker Desktop → Settings → Resources
    ```
 
-3. **Context Switching Issues**
+4. **Context Switching Issues**
    ```bash
    # Reset kubeconfig
    k3d kubeconfig merge <cluster-name> --kubeconfig-switch-context
@@ -136,7 +167,7 @@ k3d cluster delete <cluster-name>  # dev, staging, or prod
    KUBECONFIG=~/.k3d/kubeconfig-dev.yaml:~/.k3d/kubeconfig-staging.yaml:~/.k3d/kubeconfig-prod.yaml kubectl config view --merge --flatten > ~/.kube/config
    ```
 
-4. **Cluster Not Responding**
+5. **Cluster Not Responding**
    ```bash
    # Restart cluster
    k3d cluster stop <cluster-name>
@@ -148,7 +179,7 @@ k3d cluster delete <cluster-name>  # dev, staging, or prod
    ./apply-configs.sh
    ```
 
-5. **Docker Issues**
+6. **Docker Issues**
    ```bash
    # Reset Docker Desktop
    docker system prune -a  # Warning: removes all unused containers/images
@@ -194,6 +225,25 @@ kubectl describe resourcequota
    kubectl get componentstatuses
    kubectl cluster-info
    ```
+
+## macOS Compatibility Notes
+
+This project is specifically designed to work with macOS's default bash version (3.2) and includes several macOS-specific optimizations:
+
+1. **Bash Compatibility**:
+   - Uses bash 3.2 compatible syntax
+   - Avoids advanced bash features not available in macOS default shell
+   - Properly handles macOS-specific paths and commands
+
+2. **Docker Desktop Integration**:
+   - Correctly detects Docker Desktop storage location
+   - Handles macOS-specific Docker resource management
+   - Uses compatible volume mounts and networking
+
+3. **Resource Management**:
+   - Adapts to macOS memory management
+   - Handles Docker Desktop resource limits appropriately
+   - Uses macOS-compatible disk space checking
 
 ## Additional Resources
 
